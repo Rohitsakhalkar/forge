@@ -38,9 +38,11 @@ class PythonEnvironment():
 
     def uninstall_lib(self,args):
         try:
-            
+            print("started")
             started_at = datetime.now()
-            confirmation = input(f"do you want to uninstall{args[1]}?  y/n ")
+            print("taking input")
+            confirmation = input(f"do you want to uninstall{args[1]}?  y/n ").lower()
+            print("took input")
             if confirmation ==  "y":
                 subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
                 status = "Success"
