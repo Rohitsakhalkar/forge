@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=40.8.0"]
+build.baackend = "setuptools.build_meta"
+
+[project]
+name = "forge"
+version = "0.1.0"
+description = "A task runner and automation tool"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.scripts]
+forge = "forge.cli:main"
