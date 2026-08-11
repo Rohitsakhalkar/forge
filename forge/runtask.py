@@ -40,8 +40,13 @@ class PythonEnvironment():
         try:
             
             started_at = datetime.now()
-            subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
-            status = "Success"
+            confirmation = input(f"do you want to uninstall{args[1]}?  y/n ")
+            if confirmation ==  "y":
+                subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
+                status = "Success"
+            else: 
+                status = "Failed"
+                print("user terminated the process")
             task = f"Executed {args}"
             ended_at = datetime.now()
             duration = ended_at - started_at
