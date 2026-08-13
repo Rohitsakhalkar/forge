@@ -1,5 +1,6 @@
 import sys
-from .runtask import Runtask, PythonEnvironment
+from .runtask import Runtask
+from .pythonenvironment import PythonEnvironment
 
 
 def main():
