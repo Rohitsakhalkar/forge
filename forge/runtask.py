@@ -29,88 +29,62 @@ class PythonEnvironment():
             "install": self.install_lib,
             "uninstall": self.uninstall_lib
         }
-        if args[0] in commands:
-             self.install_lib(args)
-
+        command = commands.get(args[0])
+        
+        if command:
+            command(args)
         else:
             filename = args[0]
             self.exe_files(filename)
 
+    def upgrade_lib(self , args):
+        try:
+            started_at = datetime.now()
+        except Exception as e:
+            pass
+
     def uninstall_lib(self,args):
         try:
-            print("started")
             started_at = datetime.now()
-            print("taking input")
             confirmation = input(f"do you want to uninstall{args[1]}?  y/n ").lower()
-            print("took input")
             if confirmation ==  "y":
-                subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
+                result = subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
                 status = "Success"
             else: 
-                status = "Failed"
+                status = "terminated"
                 print("user terminated the process")
-            task = f"Executed {args}"
+            taskname = f"Executed {args}"
             ended_at = datetime.now()
             duration = ended_at - started_at
-            self.task = {
-                "task":task,
-                "status":status,
-                "started_at":str(started_at),
-                "ended_at":str(ended_at),
-                "duration": str(duration)
-            }
-            db = Database()
-            db.save_history(self.task)
+            self.task_save(taskname, status, started_at, ended_at, duration)
 
         except Exception as e:
             print("task failed")
             status = "Failed"
-            task = f"Executed {args}"
+            taskname = f"Executed {args}"
             ended_at = datetime.now()
             duration = ended_at - started_at
-            self.task = {
-                "task":task,
-                "status":status,
-                "started_at":str(started_at),
-                "ended_at":str(ended_at),
-                "duration": str(duration)
-            }
-            db = Database()
-            db.save_history(self.task)
+            self.task_save(taskname, status, started_at, ended_at, duration)
 
     def install_lib(self,args):
         try:
             started_at = datetime.now()
             subprocess.run([sys.executable,"-m","pip","install",args[1]],check = True)
             status = "Success"
-            task = f"Executed {args}"
+            taskname = f"Executed {args}"
             ended_at = datetime.now()
             duration = ended_at - started_at
-            self.task = {
-                "task":task,
-                "status":status,
-                "started_at":str(started_at),
-                "ended_at":str(ended_at),
-                "duration": str(duration)
-                }
-            db = Database()
-            db.save_history(self.task)
+            self.task_save(taskname, status, started_at, ended_at, duration)
 
         except Exception as e:
-            print("task failed")
             status = "Failed"
-            task = f"Executed {args}"
+            taskname = f"Executed {args}"
             ended_at = datetime.now()
             duration = ended_at - started_at
-            self.task = {
-                "task":task,
-                "status":status,
-                "started_at":str(started_at),
-                "ended_at":str(ended_at),
-                "duration": str(duration)
-                }
-            db = Database()
-            db.save_history(self.task)
+            self.task_save(taskname, status, started_at, ended_at, duration)
+            print("task failed")
+            print(e)
+            
 
     def exe_files(self, filename):
         
@@ -121,35 +95,25 @@ class PythonEnvironment():
             taskname = f"Executed {filename}"
             ended_at = datetime.now()
             duration = ended_at - started_at
-            self.task = {
-                "task":taskname,
-                "status":status,
-                "started_at":str(started_at),
-                "ended_at":str(ended_at),
-                "duration": str(duration)
-            }
-            db = Database()
-            db.save_history(self.task)
+            self.task_save(taskname, status, started_at, ended_at, duration)
 
         except Exception as e:
             taskname = f"Executed {filename}"
             ended_at = datetime.now()
             status = "Failed"
             duration = ended_at - started_at
-            self.task = {
-                "task":taskname,
-                "status":status,
-                "started_at":str(started_at),
-                "ended_at":str(ended_at),
-                "duration": str(duration)
-            }
-            db = Database()
-            db.save_history(self.task)
+            self.task_save(taskname, status, started_at, ended_at, duration)
             print("Task Failed")
             print(e)
 
-    def savetask(self, data):
-       pass
-
-    def loadtask(Self):
-       pass
+    def task_save(self,taskname,status,started_at,ended_at,duration):
+        self.task = {
+            "task":taskname,
+            "status":status,
+            "started_at":str(started_at),
+            "ended_at":str(ended_at),
+            "duration": str(duration)
+                    }
+        db = Database()
+        db.save_history(self.task)
+   
