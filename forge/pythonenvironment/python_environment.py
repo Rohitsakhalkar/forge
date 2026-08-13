@@ -2,7 +2,7 @@ from datetime import datetime
 import sys
 from forge.database import Database
 import subprocess
-
+import os
 
 class PythonEnvironment():
 
@@ -13,7 +13,8 @@ class PythonEnvironment():
         commands ={
             "install": self.install_lib,
             "uninstall": self.uninstall_lib,
-            "upgrade": self.upgrade_lib
+            "upgrade": self.upgrade_lib,
+            "venv": self.create_venv
         }
         command = commands.get(args[0])
         
@@ -22,6 +23,26 @@ class PythonEnvironment():
         else:
             filename = args[0]
             self.exe_files(filename)
+
+    def create_venv(self, args):
+        try:
+            path = f"{os.getcwd()}/{args[1]}"
+            started_at = datetime.now()
+            subprocess.run([sys.executable,"-m","venv",path],check = True)
+            status = "success"
+            taskname = f"Executed {args}"
+            ended_at = datetime.now()
+            duration = ended_at - started_at
+            self.task_save(taskname, status, started_at, ended_at, duration)
+        except Exception as e:
+            print("Task failed")
+            print(e)
+            status = "Failed"
+            taskname = f"Executed {args}"
+            ended_at = datetime.now()
+            duration = ended_at - started_at
+            self.task_save(taskname, status, started_at, ended_at, duration)
+            
 
     def upgrade_lib(self , args):
         try:
@@ -32,14 +53,15 @@ class PythonEnvironment():
             ended_at = datetime.now()
             duration = ended_at - started_at
             self.task_save(taskname, status, started_at, ended_at, duration)
+
         except Exception as e:
             print("task failed")
+            print(e)
             status = "Failed"
             taskname = f"Executed {args}"
             ended_at = datetime.now()
             duration = ended_at - started_at
             self.task_save(taskname, status, started_at, ended_at, duration)
-            pass
 
     def uninstall_lib(self,args):
         try:
