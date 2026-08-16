@@ -16,92 +16,61 @@ class PythonEnvironment():
             "upgrade": self.upgrade_lib,
             "venv": self.create_venv
         }
-        command = commands.get(args[0])
+        command = commands.get(args[1])
         
         if command:
             command(args)
         else:
-            filename = args[0]
+            filename = args[1]
             self.exe_files(filename)
 
     def create_venv(self, args):
         try:
-            path = f"{os.getcwd()}/{args[1]}"
+            path = f"{os.getcwd()}/{args[2]}"
             started_at = datetime.now()
             subprocess.run([sys.executable,"-m","venv",path],check = True)
-            status = "success"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
         except Exception as e:
             print("Task failed")
             print(e)
-            status = "Failed"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
             
 
     def upgrade_lib(self , args):
         try:
             started_at = datetime.now()
-            subprocess.run([sys.executable, "-m","pip","install","--upgrade",args[1]],check = True)
-            status = "success"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            subprocess.run([sys.executable, "-m","pip","install","--upgrade",args[2]],check = True)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
 
         except Exception as e:
             print("task failed")
             print(e)
-            status = "Failed"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def uninstall_lib(self,args):
         try:
             started_at = datetime.now()
-            confirmation = input(f"do you want to uninstall{args[1]}?  y/n ").lower()
+            confirmation = input(f"do you want to uninstall{args[2]}?  y/n ").lower()
             if confirmation ==  "y":
                 result = subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
-                status = "Success"
+                self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
             else: 
-                status = "terminated"
+                self.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
                 print("user terminated the process")
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            
 
         except Exception as e:
             print("task failed")
-            status = "Failed"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def install_lib(self,args):
         try:
             started_at = datetime.now()
-            subprocess.run([sys.executable,"-m","pip","install",args[1]],check = True)
-            status = "Success"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            subprocess.run([sys.executable,"-m","pip","install",args[2]],check = True)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
 
         except Exception as e:
-            status = "Failed"
-            taskname = f"Executed {args}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
             print("task failed")
             print(e)
             
@@ -111,22 +80,15 @@ class PythonEnvironment():
         try:
             started_at = datetime.now()
             subprocess.run([sys.executable,f"{filename}.py"], check=True )
-            status = "Success"
-            taskname = f"Executed {filename}"
-            ended_at = datetime.now()
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed:{filename}", status = "Completed", ended_at = datetime.now())
 
         except Exception as e:
-            taskname = f"Executed {filename}"
-            ended_at = datetime.now()
-            status = "Failed"
-            duration = ended_at - started_at
-            self.task_save(taskname, status, started_at, ended_at, duration)
+            self.save_task(started_at, taskname = f"Executed:{filename}", status = "failed", ended_at = datetime.now())
             print("Task Failed")
             print(e)
 
-    def task_save(self,taskname,status,started_at,ended_at,duration):
+    def save_task(self, started_at, taskname ,status ,ended_at):
+        duration = ended_at - started_at
         self.task = {
             "task":taskname,
             "status":status,
