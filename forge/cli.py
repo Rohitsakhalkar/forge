@@ -3,6 +3,8 @@ from .runtask import Runtask
 from .pythonenvironment import PythonEnvironment
 from .clean import Cleaner
 from .fileoperation import FileOperation
+from .scanner import Executable
+from .app import App
 
 def main():
     commands = {
@@ -17,8 +19,9 @@ def main():
         "rename": FileOperation(),
         "copy" : FileOperation(),
         "mkdir": FileOperation(),
-        "rmdir": FileOperation() 
-        
+        "rmdir": FileOperation(), 
+        "scan": Executable(),
+        "app" : App()
     } 
     command = sys.argv[1:]
 

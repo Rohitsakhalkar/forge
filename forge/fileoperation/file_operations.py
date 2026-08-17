@@ -8,6 +8,7 @@ class FileOperation:
 
     def __init__(self):
         self.task = {}
+        self.db = Database()
 
     def execute(self,args):
         commands = {
@@ -33,13 +34,13 @@ class FileOperation:
             path = Path(args[1])
             if path.exists():
                print("folder Exist")
-               self.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
+               self.db.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
             else:
                 Path(path).mkdir(parents = True , exist_ok = True)
-                self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def remove_folder(self,args):
         try:
@@ -54,17 +55,17 @@ class FileOperation:
                 confirm = input("do you want to delete all [y/n]").lower()
                 if confirm == 'y':
                     shutil.rmtree(path)
-                    self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                    self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
                 else:
                     print("Terminated by user")
-                    self.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
+                    self.db.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
             else:
                 path.rmdir()
-                self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
                 
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def add_file(self,args):
         try:
@@ -78,23 +79,23 @@ class FileOperation:
                     
                     file_name = self._unique_name(args[1])
                     Path(folder_name/file_name).touch()
-                    self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                    self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
                 else:
                     Path(folder_name/file_name).touch()
-                    self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                    self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
             else:
                 confirm = input(f"{folder_name} doesn't exisit do you want to create [y/n]").lower()
                 if confirm == 'y':
                     Path(folder_name).mkdir(parents = True, exist_ok = True)
                     Path(folder_name/file_name).touch()
-                    self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                    self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
                 else :
                     print("File creation terminated") 
-                    self.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
+                    self.db.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
 
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def delete_file(self,args):
         try:   
@@ -102,14 +103,14 @@ class FileOperation:
             path = Path(args[1])
             if path.exists():
                 path.unlink()
-                self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
             else:
                 print("No such file exist")
-                self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+                self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def list_dir(self,args):
         try:
@@ -117,38 +118,44 @@ class FileOperation:
             path = Path().cwd()
             for i in path.iterdir():
                 print(i.name)
-            self.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def sort_files(self,args):
-        source_dir = Path(args[1]) if len(args)  > 1 else Path.cwd()
-        file_types = {
-            "Images":['.png','.jpg','.jpeg','.webp','.gif'],
-            "Videos":['.mp4','.mkv','.avi'],
-            "Documents":['.pdf','.docx','.txt','.pptx'],
-            "Music":['.mp3','.wav']
-        }
-        for file in source_dir.iterdir():
-            if file.is_dir():
-                continue
-            extension = file.suffix.lower()
-            for folder_name ,extensions in file_types.items():
-                if extension in extensions:
-                    target_folder = source_dir/folder_name
-                    target_folder.mkdir(exist_ok = True)
-                    shutil.move(str(file),str(target_folder/file.name))
-
+        try:
+            started_at = datetime.now()
+            source_dir = Path(args[1]) if len(args)  > 1 else Path.cwd()
+            file_types = {
+                "Images":['.png','.jpg','.jpeg','.webp','.gif'],
+                "Videos":['.mp4','.mkv','.avi'],
+                "Documents":['.pdf','.docx','.txt','.pptx'],
+                "Music":['.mp3','.wav']
+            }
+            for file in source_dir.iterdir():
+                if file.is_dir():
+                    continue
+                extension = file.suffix.lower()
+                for folder_name ,extensions in file_types.items():
+                    if extension in extensions:
+                        target_folder = source_dir/folder_name
+                        target_folder.mkdir(exist_ok = True)
+                        shutil.move(str(file),str(target_folder/file.name))
+            self.db.save_task(started_at, taskname = f"Executed {args}",status = "completed",ended_at = datetime.now())
+        except Exception as e:
+            print(f"task failed: {e}")
+            self.db.save_task(started_at, taskname = f"Executed {args}",status = "failed",ended_at = datetime.now())
+            
     def file_content(self,args):
         try:
             started_at = datetime.now()
             content = Path(args[1]).read_text(encoding="utf-8")
             print(content)
-            self.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
 
     def _unique_name(self,filepath):
 
@@ -169,10 +176,10 @@ class FileOperation:
         try:
             started_at = datetime.now()
             Path(args[1]).rename(args[2])
-            self.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
         except Exception as e:
             print(f"Task failed: {e}")
-            self.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
 
     def copy(self,args):
         try:
@@ -183,20 +190,7 @@ class FileOperation:
                 shutil.copytree(source, destination, dirs_exist_ok = True)
             else:
                 shutil.copy2(args[1],args[2])
-            self.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
         except Exception as e:
             print(f"task failed: {e}")
-            self.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
-
-    def save_task(self, started_at, taskname, status, ended_at):
-        duration =  ended_at - started_at
-        self.task = {
-            "taskname":taskname,
-            "status": status,
-            "started_at":str(started_at),
-            "ended_at":str(ended_at),
-            "duration":str(duration)
-        }
-        db = Database()
-        db.save_history(self.task)
-        
+            self.db.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
