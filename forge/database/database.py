@@ -3,8 +3,10 @@ from pathlib import Path
 
 class Database():
     def __init__(self):
-        self.HISTORYJSON = Path(__file__).parent/"history.json"
-        self.APPSJSON = Path(__file__).parent/"apps.json"
+        self.parent = Path(__file__).parent
+        self.HISTORYJSON = self.parent/"history.json"
+        self.APPSJSON = self.parent/"apps.json"
+        self.EXEJSON = self.parent/"exe.json"
 
     def save_history(self,data):
 
@@ -48,6 +50,26 @@ class Database():
                 json.dump(data, f, indent = 4)
         except FileNotFoundError:
             raise FileNotFoundError("create a json file in database with name apps.json")
+
+    def save_exe_paths(self,appname,path):
+        try:
+            if not self.EXEJSON.exists():
+                Path(self.EXEJSON.parent).touch("exe.json")
+            data = self.load_exe_data()
+            data[str(appname)] = str(path)
+            with self.EXEJSON.open('w') as f:
+                json.dump(data, f, indent = 4)
+        except Exception as e:
+            # raise FileNotFoundError("create a json file in database with name exe.json")
+            print(e)
+
+    def load_exe_data(self):
+        try: 
+            with self.EXEJSON.open('r') as f:
+                data = json.load(f)
+            return data
+        except FileNotFoundError:
+            raise FileNotFoundError("create a json file in database with name exe.json")
 
     def save_task(self, started_at, taskname, status, ended_at):
         duration = ended_at - started_at
