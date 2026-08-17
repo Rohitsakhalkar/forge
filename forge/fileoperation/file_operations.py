@@ -123,10 +123,32 @@ class FileOperation:
             self.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
     def sort_files(self,args):
-        print("sort files")
+        source_dir = Path(args[1]) if len(args)  > 1 else Path.cwd()
+        file_types = {
+            "Images":['.png','.jpg','.jpeg','.webp','.gif'],
+            "Videos":['.mp4','.mkv','.avi'],
+            "Documents":['.pdf','.docx','.txt','.pptx'],
+            "Music":['.mp3','.wav']
+        }
+        for file in source_dir.iterdir():
+            if file.is_dir():
+                continue
+            extension = file.suffix.lower()
+            for folder_name ,extensions in file_types.items():
+                if extension in extensions:
+                    target_folder = source_dir/folder_name
+                    target_folder.mkdir(exist_ok = True)
+                    shutil.move(str(file),str(target_folder/file.name))
 
     def file_content(self,args):
-        print("display file content")
+        try:
+            started_at = datetime.now()
+            content = Path(args[1]).read_text(encoding="utf-8")
+            print(content)
+            self.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
+        except Exception as e:
+            print(f"task failed: {e}")
+            self.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
 
     def _unique_name(self,filepath):
 
@@ -144,10 +166,27 @@ class FileOperation:
         return new_file
 
     def rename(self,args):
-        print("rename")
+        try:
+            started_at = datetime.now()
+            Path(args[1]).rename(args[2])
+            self.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
+        except Exception as e:
+            print(f"Task failed: {e}")
+            self.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
 
     def copy(self,args):
-        print("copy")
+        try:
+            started_at = datetime.now()
+            source = Path(args[1])
+            destination = Path(f"{args[2]}/{source.name}")
+            if source.is_dir():
+                shutil.copytree(source, destination, dirs_exist_ok = True)
+            else:
+                shutil.copy2(args[1],args[2])
+            self.save_task(started_at, taskname = f"Excuted {args}",status = "completed", ended_at = datetime.now())
+        except Exception as e:
+            print(f"task failed: {e}")
+            self.save_task(started_at, taskname = f"Excuted {args}",status = "failed", ended_at = datetime.now())
 
     def save_task(self, started_at, taskname, status, ended_at):
         duration =  ended_at - started_at
