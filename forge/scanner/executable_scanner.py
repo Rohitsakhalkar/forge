@@ -17,7 +17,10 @@ class Executable:
 
     def scan_exe(self):
         scannable_paths ={
-            "program_files":  "c:/Program Files" 
+            "windows" : "C:/Windows",
+            "users": "C:/Users",
+            "program_files":  "c:/Program Files" ,
+            "program_files(x86)" : "C:/Program Files (x86)",
                       }
         apps = self.apps()
         for keys, path in scannable_paths.items():
