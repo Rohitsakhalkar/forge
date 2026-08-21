@@ -1,6 +1,6 @@
 # Forge 
 
- **Built by Sakhalkar, in search of meaning.**
+ # **Built by Sakhalkar, in search of meaning.**
 
 Forge is a Python-based command-line automation toolkit designed to bring common development and system operations under one CLI.
 
