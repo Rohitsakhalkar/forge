@@ -1,3 +1,19 @@
 {
-
+    "explorer": "C:\\Windows\\WinSxS\\wow64_microsoft-windows-explorer_31bf3856ad364e35_10.0.26100.8875_none_f7a68e5d5e3e7bb8\\r\\explorer.exe",
+    "notepad": "C:\\Users\\rakes\\AppData\\Local\\Microsoft\\WindowsApps\\Microsoft.WindowsNotepad_8wekyb3d8bbwe\\notepad.exe",
+    "spotify": "C:\\Users\\rakes\\AppData\\Local\\Microsoft\\WindowsApps\\SpotifyAB.SpotifyMusic_zpdnekdrzrea0\\Spotify.exe",
+    "antigravity": "C:\\Users\\rakes\\Downloads\\Antigravity.exe",
+    "vscode": "C:\\Users\\rakes\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+    "opera": "C:\\Users\\rakes\\AppData\\Local\\Programs\\Opera\\133.0.5932.85\\opera.exe",
+    "telegram": "C:\\Users\\rakes\\AppData\\Roaming\\Telegram Desktop\\tupdates\\temp\\Telegram.exe",
+    "igi": "C:\\Users\\rakes\\Desktop\\Project_IGI_RIP\\PC\\IGI.exe",
+    "davinci": "c:\\Program Files\\Blackmagic Design\\DaVinci Resolve\\Resolve.exe",
+    "blender": "c:\\Program Files\\Blender Foundation\\Blender 5.0\\blender.exe",
+    "codeblocks": "c:\\Program Files\\CodeBlocks\\codeblocks.exe",
+    "chrome": "c:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "nfs": "c:\\Program Files\\Need-for-Speed-Most-Wanted\\Speed.exe",
+    "obs": "c:\\Program Files\\obs-studio\\bin\\64bit\\obs64.exe",
+    "Unity": "c:\\Program Files\\unity_projects\\6000.0.29f1\\Editor\\Unity.exe",
+    "vlc": "c:\\Program Files\\VideoLAN\\VLC\\vlc.exe",
+    "msedge": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\150.0.4078.105\\msedge.exe"
 }
