@@ -2,7 +2,6 @@
     "chrome": "chrome.exe",
     "spotify": "spotify.exe",
     "vscode": "Code.exe",
-    "nfs": "Speed.exe",
     "blender": "blender.exe",
     "msedge": "msedge.exe",
     "obs": "obs64.exe",
@@ -20,5 +19,6 @@
     "davinci": "Resolve.exe",
     "codeblocks": "CodeBlocks.exe",
     "opera": "opera.exe",
-    "igi": "IGI.exe"
+    "igi": "IGI.exe",
+    "nfs": "Speed.exe"
 }

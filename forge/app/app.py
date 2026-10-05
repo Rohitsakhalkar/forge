@@ -6,51 +6,47 @@ class App:
     def __init__(self):
         self.task = {}
 
-    def execute(self,args):
+    def execute(self,command,*args):
         commands = {
             "add" : self.add_app,
-            "delete": self.delete_app
+            "delete": self.delete_app,
+            "show": self.show_apps
         }
-        command = commands.get(args[1])
+        command = commands.get(command)
         if command:
-            command(args)
-        elif args[1] == "show":
-            self.show_apps()
+            command(*args)
         else:
             print("Invalid command")
 
-    def add_app(self,args):
+    def add_app(self,appname,appexe):
         try:
             started_at = datetime.now()
-            appname = args[2]
-            appexe = args[3]
             data = {
                 "appname" : appname,
                 "appexe" : appexe,
             }
             db = Database()
             db.save_apps(data)
-            db.save_task(started_at, taskname = f"Executed {args}",status = "completed",ended_at = datetime.now())
+            db.save_task(started_at, taskname = f"Executed {appname,appexe}",status = "completed",ended_at = datetime.now())
         except Exception as e:
             print(f"task failed: {e}")
-            db.save_task(started_at, taskname = f"Executed {args}",status = "failed",ended_at = datetime.now())
+            db.save_task(started_at, taskname = f"Executed {appname,appexe}",status = "failed",ended_at = datetime.now())
 
-    def delete_app(self,args):
+    def delete_app(self,appname):
         try:
             started_at = datetime.now()
-            appname = args[2]
             db = Database()
             data = db.load_apps()
             if appname in data:
                 del data[appname]
                 db.save_altered_data(data)
-                db.save_task(started_at, taskname = f"Executed {args}",status = "completed",ended_at = datetime.now())
+                db.save_task(started_at, taskname = f"Executed {appname}",status = "completed",ended_at = datetime.now())
             else:
                 print("no app was found")
-                db.save_task(started_at, taskname = f"Executed {args}",status = "failed",ended_at = datetime.now())
+                db.save_task(started_at, taskname = f"Executed {appname}",status = "failed",ended_at = datetime.now())
         except Exception as e:
             print(f"task failed: {e}")
-            db.save_task(started_at, taskname = f"Executed {args}",status = "failed",ended_at = datetime.now())
+            db.save_task(started_at, taskname = f"Executed {appname}",status = "failed",ended_at = datetime.now())
 
 
     def show_apps(self):

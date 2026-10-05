@@ -7,15 +7,6 @@ class Executable:
     def __init__(self):
         self.db = Database()
 
-    def execute(self,args):
-        commands = {
-             "scan": self.scan_exe
-         }
-        command = commands.get(args[0])
-        if command:
-            command()
-        else:
-            print("Invalid commnd")
 
     def scan_exe(self):
         try:

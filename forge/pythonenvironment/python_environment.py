@@ -1,8 +1,9 @@
 from datetime import datetime
 import sys
 from forge.database import Database
+from pathlib import Path
 import subprocess
-import os
+
 
 class PythonEnvironment():
 
@@ -10,53 +11,53 @@ class PythonEnvironment():
         self.tasks = {}
         self.db = Database()
 
-    def execute(self, args):
+    def execute(self, command, *args):
         commands ={
             "install": self.install_lib,
             "uninstall": self.uninstall_lib,
             "upgrade": self.upgrade_lib,
-            "venv": self.create_venv
+            "venv": self.create_venv,
+            "run" : self.exe_files
         }
-        command = commands.get(args[1])
+        command = commands.get(command)
         
         if command:
-            command(args)
+            command(*args)
         else:
-            filename = args[1]
-            self.exe_files(filename)
+           print("Invalid command")
 
-    def create_venv(self, args):
+    def create_venv(self, path):
         try:
-            path = f"{os.getcwd()}/{args[2]}"
+            path = f"{path}"
             started_at = datetime.now()
             subprocess.run([sys.executable,"-m","venv",path],check = True)
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{path}", status = "Completed", ended_at = datetime.now())
         except Exception as e:
             print("Task failed")
             print(e)
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{path}", status = "failed", ended_at = datetime.now())
             
 
-    def upgrade_lib(self , args):
+    def upgrade_lib(self , library):
         try:
             started_at = datetime.now()
-            subprocess.run([sys.executable, "-m","pip","install","--upgrade",args[2]],check = True)
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+            subprocess.run([sys.executable, "-m","pip","install","--upgrade",library],check = True)
+            self.db.save_task(started_at, taskname = f"Executed{library}", status = "Completed", ended_at = datetime.now())
 
         except Exception as e:
             print("task failed")
             print(e)
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{library}", status = "failed", ended_at = datetime.now())
 
-    def uninstall_lib(self,args):
+    def uninstall_lib(self, library):
         try:
             started_at = datetime.now()
-            confirmation = input(f"do you want to uninstall{args[2]}?  y/n ").lower()
+            confirmation = input(f"do you want to uninstall{library}?  y/n ").lower()
             if confirmation ==  "y":
-                result = subprocess.run([sys.executable,"-m","pip","uninstall",args[1]],check = True)
-                self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+                result = subprocess.run([sys.executable,"-m","pip","uninstall",library],check = True)
+                self.db.save_task(started_at, taskname = f"Executed{library}", status = "Completed", ended_at = datetime.now())
             else: 
-                self.db.save_task(started_at, taskname = f"Executed{args}", status = "terminated", ended_at = datetime.now())
+                self.db.save_task(started_at, taskname = f"Executed{library}", status = "terminated", ended_at = datetime.now())
                 print("user terminated the process")
             
 
@@ -64,27 +65,28 @@ class PythonEnvironment():
             print("task failed")
             self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
 
-    def install_lib(self,args):
+    def install_lib(self, library):
         try:
             started_at = datetime.now()
-            subprocess.run([sys.executable,"-m","pip","install",args[2]],check = True)
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "Completed", ended_at = datetime.now())
+            subprocess.run([sys.executable,"-m","pip","install",library],check = True)
+            self.db.save_task(started_at, taskname = f"Executed{library}", status = "Completed", ended_at = datetime.now())
 
         except Exception as e:
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{library}", status = "failed", ended_at = datetime.now())
             print(f"task failed: {e}")
            
             
 
-    def exe_files(self, filename):
+    def exe_files(self, path):
         
         try:
+            path = Path(path)
             started_at = datetime.now()
-            subprocess.run([sys.executable,f"{filename}.py"], check=True )
-            self.db.save_task(started_at, taskname = f"Executed:{filename}", status = "Completed", ended_at = datetime.now())
+            subprocess.run([sys.executable,f"{path}"], check=True )
+            self.db.save_task(started_at, taskname = f"Executed:{path}", status = "Completed", ended_at = datetime.now())
 
         except Exception as e:
-            self.db.save_task(started_at, taskname = f"Executed:{filename}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed:{path}", status = "failed", ended_at = datetime.now())
             print(f"Task Failed{e}")
             
 

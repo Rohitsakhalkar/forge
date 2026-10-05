@@ -7,10 +7,6 @@ class Runtask():
     def __init__(self):
         self.db = Database()
 
-    def execute(self, args):
-        self.run_task(args[1])
-
-
     def run_task(self, task):
         try:
             started_at = datetime.now()
