@@ -13,16 +13,18 @@ class PythonEnvironment():
 
     def execute(self, command, *args):
         commands ={
-            "install": self.install_lib,
-            "uninstall": self.uninstall_lib,
-            "upgrade": self.upgrade_lib,
-            "venv": self.create_venv,
-            "run" : self.exe_files
+            "install": (self.install_lib, 1),
+            "uninstall": (self.uninstall_lib, 1),
+            "upgrade": (self.upgrade_lib, 1),
+            "venv": (self.create_venv, 1),
+            "run" : (self.exe_files, 1)
         }
-        command = commands.get(command)
-        
-        if command:
-            command(*args)
+        if  command in commands:
+            handler, needed_args = commands.get(command)
+            if len(args) == needed_args:
+                handler(*args)
+            else:
+                print(f"missing arguments required {needed_args} given {len(args)}")
         else:
            print("Invalid command")
 

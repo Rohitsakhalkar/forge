@@ -8,13 +8,16 @@ class App:
 
     def execute(self,command,*args):
         commands = {
-            "add" : self.add_app,
-            "delete": self.delete_app,
-            "show": self.show_apps
+            "add" : (self.add_app, 2),
+            "delete": (self.delete_app, 1),
+            "show": (self.show_apps, 0)
         }
-        command = commands.get(command)
-        if command:
-            command(*args)
+        if command in commands:
+            handler, needed_args = commands.get(command)
+            if len(args) == needed_args: 
+                handler(*args)
+            else:
+                print(f"missing argument required {needed_args} given {len}")
         else:
             print("Invalid command")
 
