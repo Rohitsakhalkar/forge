@@ -65,7 +65,7 @@ class PythonEnvironment():
 
         except Exception as e:
             print("task failed")
-            self.db.save_task(started_at, taskname = f"Executed{args}", status = "failed", ended_at = datetime.now())
+            self.db.save_task(started_at, taskname = f"Executed{library}", status = "failed", ended_at = datetime.now())
 
     def install_lib(self, library):
         try:
