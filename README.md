@@ -6,7 +6,24 @@ Forge is a Python-based command-line automation toolkit designed to bring common
 
 It started as a simple Python environment manager and evolved into a small automation framework capable of managing Python environments, performing file operations, and launching applications directly from the terminal.
 
+## Features Implemented
 
+- Python Environment Management: Create and manage virtual environments.
+- Package Management: Install, uninstall, and upgrade Python packages.
+- File Operations: Automate common file-related tasks.
+- Application Management: Manage registered applications through the CLI.
+- Executable Scanner: Discover executable applications and maintain application records.
+- Persistent Storage: Store application information using JSON.
+- Modular Architecture: Organize functionality into separate modules for maintainability.
+
+ ## Engineering Work
+ 
+- Built a command-line interface for performing system and development automation tasks.
+- Used subprocess to interact with system commands and applications.
+- Used pathlib for filesystem operations.
+- Integrated Python's venv module for environment management.
+- Implemented JSON-based persistence for application data.
+- Structured the codebase into reusable modules.
 
 ## Features
 
